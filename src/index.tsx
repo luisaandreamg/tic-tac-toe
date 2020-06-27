@@ -2,7 +2,7 @@ import React, { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
 
 import App from './App'
-import { register } from './core'
+import { unregister } from './core'
 
 ReactDOM.render(
   <StrictMode>
@@ -10,4 +10,4 @@ ReactDOM.render(
   </StrictMode>,
   document.getElementById('root')
 )
-register()
+unregister()
