@@ -1,9 +1,9 @@
-import { checkWin } from 'helpers'
-import { BLOCK } from 'App'
+import checkWin from './check-win'
+import { SYMBOL } from 'typings'
 
 interface Input {
-  newBoard: BLOCK[]
-  isXTurn: boolean
+  newBoard: any[]
+  playerTurn: SYMBOL
   turnNumber: number
 }
 type CheckBoardOutput =
@@ -13,13 +13,15 @@ type CheckBoardOutput =
   | 'Ninguno'
 
 export default function checkBoard({
-  isXTurn,
+  playerTurn,
   turnNumber,
   newBoard,
 }: Input): CheckBoardOutput {
   if (turnNumber >= 5) {
-    if (isXTurn && checkWin(newBoard, 'x')) return 'Gana el jugador X'
-    if (!isXTurn && checkWin(newBoard, 'o')) return 'Gana el jugador O'
+    if (playerTurn === 'X' && checkWin(newBoard, 'X'))
+      return 'Gana el jugador X'
+    if (playerTurn === 'O' && checkWin(newBoard, 'O'))
+      return 'Gana el jugador O'
     if (turnNumber === 9) return 'Gato'
   }
 

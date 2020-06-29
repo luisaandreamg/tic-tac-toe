@@ -1,113 +1,67 @@
 import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
 
 import { Button, Container, Row, Block } from 'styles'
-import { checkBoard } from 'helpers'
+import { useMarkBoard, useRoom } from 'hooks'
 
 export type SYMBOL = 'x' | 'o'
 export type BLOCK = SYMBOL | '-'
 
 const Room = () => {
-  const { id } = useParams()
-  const [board, setBoard] = useState<BLOCK[]>([
-    '-',
-    '-',
-    '-',
-    '-',
-    '-',
-    '-',
-    '-',
-    '-',
-    '-',
-  ])
-  const [startingTurn, setStartingTurn] = useState<SYMBOL>('x')
-  const [isXTurn, setIsXTurn] = useState<boolean>(startingTurn === 'x')
-  const [turnNumber, setTurnNumber] = useState<number>(1)
-  const [message, setMessage] = useState<string>(
-    `Es el turno del jugador ${startingTurn.toUpperCase()}`
-  )
+  const { isMarking, markBoard } = useMarkBoard()
+  const { isFetching, room } = useRoom()
 
-  const [gameDone, setGameDone] = useState<boolean>(false)
+  if (isFetching) return <h1>Cargando Sala...</h1>
+  if (!room) return <h1>La sala no fue encontrada</h1>
+
+  const { board, isGameDone, message } = room
 
   function handleClick(index: number) {
-    if (board[index] === '-' && !gameDone) {
-      const newBoard = [...board]
-      newBoard[index] = isXTurn ? 'x' : 'o'
-
-      const outcome = checkBoard({ newBoard, isXTurn, turnNumber })
-
-      switch (outcome) {
-        case 'Gana el jugador X': {
-          setMessage('El jugador X gana!')
-          setGameDone(true)
-          break
-        }
-        case 'Gana el jugador O': {
-          setMessage('El jugador O gana!')
-          setGameDone(true)
-          break
-        }
-        case 'Gato': {
-          setMessage('Gato!')
-          console.log('gato')
-          setGameDone(true)
-          break
-        }
-        case 'Ninguno':
-        default:
-          setMessage(`Es el turno del jugador ${isXTurn ? 'O' : 'X'}`)
-      }
-
-      setTurnNumber(turnNumber + 1)
-      setBoard(newBoard)
-      setIsXTurn(!isXTurn)
-    }
+    if (!isMarking && !board[index] && !isGameDone) markBoard(index, room!)
   }
 
   function handleClear() {
-    setStartingTurn(startingTurn === 'x' ? 'o' : 'x')
+    /*setStartingTurn(startingTurn === 'x' ? 'o' : 'x')
     setIsXTurn(startingTurn === 'x')
     setMessage(`Es el turno del jugador ${startingTurn.toUpperCase()}`)
     setBoard(['-', '-', '-', '-', '-', '-', '-', '-', '-'])
     setGameDone(false)
-    setTurnNumber(1)
+    setTurnNumber(1)*/
   }
 
   return (
     <Container>
-      <h1> {id}</h1>
       <h3>{message}</h3>
       <Row>
         <Block onClick={() => handleClick(0)}>
-          {board[0] !== '-' && board[0]}
+          {isMarking ? '-' : board[0]}
         </Block>
         <Block onClick={() => handleClick(1)}>
-          {board[1] !== '-' && board[1]}
+          {isMarking ? '-' : board[1]}
         </Block>
         <Block onClick={() => handleClick(2)}>
-          {board[2] !== '-' && board[2]}
+          {isMarking ? '-' : board[2]}
         </Block>
       </Row>
       <Row>
         <Block onClick={() => handleClick(3)}>
-          {board[3] !== '-' && board[3]}
+          {isMarking ? '-' : board[3]}
         </Block>
         <Block onClick={() => handleClick(4)}>
-          {board[4] !== '-' && board[4]}
+          {isMarking ? '-' : board[4]}
         </Block>
         <Block onClick={() => handleClick(5)}>
-          {board[5] !== '-' && board[5]}
+          {isMarking ? '-' : board[5]}
         </Block>
       </Row>
       <Row>
         <Block onClick={() => handleClick(6)}>
-          {board[6] !== '-' && board[6]}
+          {isMarking ? '-' : board[6]}
         </Block>
         <Block onClick={() => handleClick(7)}>
-          {board[7] !== '-' && board[7]}
+          {isMarking ? '-' : board[7]}
         </Block>
         <Block onClick={() => handleClick(8)}>
-          {board[8] !== '-' && board[8]}
+          {isMarking ? '-' : board[8]}
         </Block>
       </Row>
       <Button onClick={handleClear}>Limpiar Tablero</Button>
