@@ -1,31 +1,27 @@
 import React, { useState } from 'react'
 
 import { Button, Container, Row, Block } from 'styles'
-import { useMarkBoard, useRoom } from 'hooks'
+import { useClearBoard, useMarkBoard, useRoom } from 'hooks'
 
 export type SYMBOL = 'x' | 'o'
 export type BLOCK = SYMBOL | '-'
 
 const Room = () => {
+  const { clearBoard, isClearing } = useClearBoard()
   const { isMarking, markBoard } = useMarkBoard()
   const { isFetching, room } = useRoom()
 
   if (isFetching) return <h1>Cargando Sala...</h1>
   if (!room) return <h1>La sala no fue encontrada</h1>
 
-  const { board, isGameDone, message } = room
+  const { board, isGameDone, message, startingTurn } = room
 
   function handleClick(index: number) {
     if (!isMarking && !board[index] && !isGameDone) markBoard(index, room!)
   }
 
   function handleClear() {
-    /*setStartingTurn(startingTurn === 'x' ? 'o' : 'x')
-    setIsXTurn(startingTurn === 'x')
-    setMessage(`Es el turno del jugador ${startingTurn.toUpperCase()}`)
-    setBoard(['-', '-', '-', '-', '-', '-', '-', '-', '-'])
-    setGameDone(false)
-    setTurnNumber(1)*/
+    clearBoard(startingTurn)
   }
 
   return (
@@ -64,7 +60,9 @@ const Room = () => {
           {isMarking ? '-' : board[8]}
         </Block>
       </Row>
-      <Button onClick={handleClear}>Limpiar Tablero</Button>
+      <Button disabled={isClearing} onClick={handleClear}>
+        Limpia {isClearing ? 'ndo' : 'r'} Tablero
+      </Button>
     </Container>
   )
 }
